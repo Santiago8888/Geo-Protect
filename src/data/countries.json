@@ -1,0 +1,21 @@
+[
+    {
+        "name": "México",
+        "sick": 164,
+        "healthy": 126577,
+        "latitude": 23.6345,
+        "longitude": -102.5528 
+    },     {
+        "name": "Costa Rica",
+        "sick": 113,
+        "healthy": 4906,
+        "latitude": 9.7489,
+        "longitude": -83.7534 
+    },    {
+        "name": "Colombia",
+        "sick": 145,
+        "healthy": 49070,
+        "latitude": 4.5709,
+        "longitude": -74.2973
+    }
+]
