@@ -1,9 +1,9 @@
 {
-  "name": "gatsby-starter-default",
+  "name": "geo-proteccion",
   "private": true,
-  "description": "A simple starter to get up and developing quickly with Gatsby",
+  "description": "A map to show the spread of COVID-19",
   "version": "0.1.0",
-  "author": "Kyle Mathews <mathews.kyle@gmail.com>",
+  "author": "Hackathon LATAM <santiago.marti67@gmail.com>",
   "dependencies": {
     "deck.gl": "^8.1.0",
     "gatsby": "^2.19.45",
