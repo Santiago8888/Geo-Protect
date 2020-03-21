@@ -33,8 +33,7 @@ export class GeoLayer extends React.Component {
     }
     
     componentDidMount(){
-		document.getElementById('deckgl-wrapper').addEventListener('contextmenu', evt => evt.preventDefault())
-
+//		document.getElementById('deckgl-wrapper').addEventListener('contextmenu', evt => evt.preventDefault())
     }
 
 	_getTooltip = ({ object }) => object
