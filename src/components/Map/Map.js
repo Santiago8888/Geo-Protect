@@ -1,8 +1,9 @@
 import { StaticMap } from 'react-map-gl'
-import { ColumnLayer } from '@deck.gl/layers'
+import { ColumnLayer, IconLayer } from '@deck.gl/layers'
 
 import DeckGL from '@deck.gl/react'
 import countries from '../../data/countries.json'
+import locations from '../../data/locations.json'
 import React from 'react'
 
 
@@ -14,23 +15,20 @@ const initialViewState = {
     latitude: 10.69279,
     longitude: -80.9878993247973,
 
-//    latitude: 37.7,
-//    longitude: -122.4,
-
     zoom: 4.5,
     pitch: 55.5,
     bearing: 5.396674584323023
 }
 
-const data = [{centroid: [-122.4, 37.7], value: 0.2}]
+const ICON_MAPPING = {
+    marker: {x: 0, y: 0, width: 32, height: 32, mask: true}
+}
 
-//export const GeoLayer = () => {
 export class GeoLayer extends React.Component {
 	constructor(props) {
 		super(props)
 		this.state = {
-            object: {},
-
+            viewState: initialViewState
 		}
     }
     
@@ -40,12 +38,15 @@ export class GeoLayer extends React.Component {
     }
 
 	_getTooltip = ({ object }) => object
-		? 	{ text:`Healthy: ${object.healthy}\n Sick: ${object.sick}` }
+        ? 	this.state.viewState.zoom < 6 
+            ?   { text:`Healthy: ${object.healthy}\n Sick: ${object.sick}` }
+            :   { text: object.isSick ? 'Sick' : 'Healthy' }
 		:	null
 
     render() {
+        const { viewState } = this.state
 
-        const layer = new ColumnLayer({
+        const aggregateLayer = new ColumnLayer({
             id: 'column-layer',
             data: countries,
             diskResolution: 12,
@@ -56,17 +57,31 @@ export class GeoLayer extends React.Component {
             getPosition: d => [d.longitude, d.latitude],
             getFillColor: d => [128+((d.sick-128)*2), 0, 128-((d.sick-128)*2), 255], // Red, Green, Blue  
             getLineColor: [0, 0, 0],
-            getElevation: d => d.sick,
+            getElevation: d => d.sick
+        })
 
-          })
+        const iconLayer = new IconLayer({
+            id: 'icon-layer',
+            data: locations,
+            pickable: true,
+            iconAtlas: 'https://deck.gl/images/icon-atlas.png',
+            iconMapping: ICON_MAPPING,
+            getIcon: d => 'marker',
+        
+            sizeScale: 15,
+            getPosition: d => [d.longitude, d.latitude],
+            getSize: d => 10,
+            getColor: d => [d.isSick*200, 140, 0],
+        })
         
         return <DeckGL
             onContextMenu={event => event.preventDefault()}
-            initialViewState={initialViewState}
+            initialViewState={viewState}
+            onViewStateChange={({ viewState }) => this.setState({ viewState: viewState })}
             height={'90vh'}
             style={{marginTop:'10vh'}}
             controller={true}
-            layers={[layer]}
+            layers={viewState.zoom > 6 ? [iconLayer] : [aggregateLayer]}
             getTooltip={this._getTooltip}
         >
             <StaticMap 
