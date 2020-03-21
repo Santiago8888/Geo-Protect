@@ -1,0 +1,19 @@
+[
+    {
+        "latitude": 23.5345,
+        "longitude": -102.5428,
+        "isSick": 1
+    },    {
+        "latitude": 22.6445,
+        "longitude": -102.0628,
+        "isSick": 0
+    },    {
+        "latitude": 23.6245,
+        "longitude": -103.6528,
+        "isSick": 0
+    },    {
+        "latitude": 23.9395,
+        "longitude": -101.6028,
+        "isSick": 1
+    }
+]

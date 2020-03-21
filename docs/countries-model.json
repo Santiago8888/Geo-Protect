@@ -1,0 +1,11 @@
+{
+    "countries": [
+        {
+            "name": "<String>",
+            "sick": "<Int>",
+            "healthy": "<Int>",
+            "latitude": "<Double>",
+            "longitude": "<Double>" 
+        }
+    ]
+}
