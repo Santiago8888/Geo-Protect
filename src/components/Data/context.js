@@ -3,8 +3,6 @@ import React, { useState, useEffect } from "react"
 
 
 const client = Stitch.initializeDefaultAppClient("geo-protection-vaqca")
-// client.auth.loginWithCredential(new AnonymousCredential())
-
 const mongo = client.getServiceClient(RemoteMongoClient.factory, "mongodb-atlas")
 const db = mongo.db("geodatadev").collection('healthmap')
 
@@ -24,7 +22,6 @@ export const DBProvider = ({ children }) => {
 
         const docs = await get_docs()
         setDocs(docs)
-        console.log(docs, id)
       }
       
       fetchData()

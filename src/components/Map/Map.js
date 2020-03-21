@@ -1,9 +1,11 @@
 import { StaticMap } from 'react-map-gl'
 import { ColumnLayer, IconLayer } from '@deck.gl/layers'
 
-import DeckGL from '@deck.gl/react'
 import countries from '../../data/countries.json'
 import locations from '../../data/locations.json'
+import DeckGL, {FlyToInterpolator} from 'deck.gl'
+
+
 import React from 'react'
 
 
@@ -27,14 +29,30 @@ const ICON_MAPPING = {
 export class GeoLayer extends React.Component {
 	constructor(props) {
 		super(props)
-		this.state = {
-            viewState: initialViewState
-		}
+		this.state = { viewState: initialViewState }
     }
     
     componentDidMount(){
-//		document.getElementById('deckgl-wrapper').addEventListener('contextmenu', evt => evt.preventDefault())
+		document.getElementById('deckgl-wrapper').addEventListener('contextmenu', evt => evt.preventDefault())
     }
+
+    componentWillReceiveProps({ navigation }){
+        if(navigation){
+            this._goToViewState({...navigation, zoom: 10.5})
+        }
+    }
+
+    _onViewStateChange = viewState => {
+        this.setState({ viewState: {...this.state.viewState, ...viewState} })
+        console.log({...this.state.viewState, ...viewState})
+    }
+    _goToViewState = props => {
+        this._onViewStateChange({
+            ...props,
+            transitionDuration: 5000,
+            transitionInterpolator: new FlyToInterpolator()            
+        })
+    }    
 
 	_getTooltip = ({ object }) => object
         ? 	this.state.viewState.zoom < 6 
@@ -75,13 +93,14 @@ export class GeoLayer extends React.Component {
         
         return <DeckGL
             onContextMenu={event => event.preventDefault()}
-            initialViewState={viewState}
-            onViewStateChange={({ viewState }) => this.setState({ viewState: viewState })}
+            initialViewState={ viewState }
             height={'90vh'}
             style={{marginTop:'10vh'}}
             controller={true}
             layers={viewState.zoom > 6 ? [iconLayer] : [aggregateLayer]}
             getTooltip={this._getTooltip}
+            viewState={ viewState }
+            onViewStateChange={({ viewState }) => this._onViewStateChange(viewState)}
         >
             <StaticMap 
                 onContextMenu={event => event.preventDefault()}
