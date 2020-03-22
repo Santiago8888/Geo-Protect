@@ -1,13 +1,14 @@
 import React, { Fragment, useState } from "react"
-import { Consumer } from '../components/Data/context'
+import { Consumer } from './components/Data/context'
 
-import Layout from "../components/layout"
-import SEO from "../components/seo"
+import Layout from "./components/layout"
+import SEO from "./components/seo"
 
-import { GeoLayer } from '../components/Map/Map'
-import { WelcomeForm } from '../components/Forms/WelcomeForm'
+import { GeoLayer } from './components/Map/Map'
+import { WelcomeForm } from './components/Forms/WelcomeForm'
 
-import '../styles/style.scss'
+import './styles/style.scss'
+
 const IndexPage = () => {
     const [ navigation, setNavigation ] = useState(null)
 

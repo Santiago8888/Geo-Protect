@@ -44,7 +44,6 @@ export class GeoLayer extends React.Component {
 
     _onViewStateChange = viewState => {
         this.setState({ viewState: {...this.state.viewState, ...viewState} })
-        console.log({...this.state.viewState, ...viewState})
     }
     _goToViewState = props => {
         this._onViewStateChange({

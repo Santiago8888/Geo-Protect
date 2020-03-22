@@ -22,6 +22,7 @@ export const DBProvider = ({ children }) => {
 
         const docs = await get_docs()
         setDocs(docs)
+        console.log(docs)
       }
       
       fetchData()

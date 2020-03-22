@@ -1,50 +1,41 @@
 {
-  "name": "geo-proteccion",
-  "private": true,
-  "description": "A map to show the spread of COVID-19",
+  "name": "geo-protect",
   "version": "0.1.0",
-  "author": "Hackathon LATAM <santiago.marti67@gmail.com>",
+  "private": true,
   "dependencies": {
+    "@testing-library/jest-dom": "^4.2.4",
+    "@testing-library/react": "^9.3.2",
+    "@testing-library/user-event": "^7.1.2",
     "bulma": "^0.8.0",
     "deck.gl": "^8.1.0",
-    "gatsby": "^2.19.45",
-    "gatsby-image": "^2.2.44",
-    "gatsby-plugin-manifest": "^2.2.48",
-    "gatsby-plugin-offline": "^3.0.41",
-    "gatsby-plugin-react-helmet": "^3.1.24",
-    "gatsby-plugin-sass": "^2.2.0",
-    "gatsby-plugin-sharp": "^2.4.13",
-    "gatsby-source-filesystem": "^2.1.56",
-    "gatsby-transformer-sharp": "^2.3.19",
     "mongodb-stitch-browser-sdk": "^4.8.0",
     "node-sass": "^4.13.1",
     "prop-types": "^15.7.2",
-    "react": "^16.12.0",
-    "react-dom": "^16.12.0",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
     "react-helmet": "^5.2.1",
-    "react-map-gl": "^5.2.3"
+    "react-map-gl": "^5.2.3",
+    "react-scripts": "3.4.1"
   },
-  "devDependencies": {
-    "prettier": "^1.19.1"
-  },
-  "keywords": [
-    "gatsby"
-  ],
-  "license": "MIT",
   "scripts": {
-    "build": "gatsby build",
-    "develop": "gatsby develop",
-    "format": "prettier --write \"**/*.{js,jsx,json,md}\"",
-    "start": "npm run develop",
-    "serve": "gatsby serve",
-    "clean": "gatsby clean",
-    "test": "echo \"Write tests! -> https://gatsby.dev/unit-testing\" && exit 1"
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/gatsbyjs/gatsby-starter-default"
+  "eslintConfig": {
+    "extends": "react-app"
   },
-  "bugs": {
-    "url": "https://github.com/gatsbyjs/gatsby/issues"
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }
