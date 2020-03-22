@@ -1,8 +1,6 @@
 import React, { useState } from "react"
-import { Formik, Form, Field } from 'formik';
-import styled from 'styled-components';
-
-/*
+import Select from 'react-select';
+import {Form, Button} from 'react-bootstrap';
 
 const SymptomsList = [
   {
@@ -41,24 +39,37 @@ const SymptomsList = [
     name: 'Neumonía en ambos pulmones'
   }
 ];
-*/
 
-const Styles = styled.section`
-  @extend .container {
-  
-  }
-`;
+const toSelectOptions = symptomsList => symptomsList.map(
+  symptom => ({label: symptom.name, value: symptom.id})
+);
 
 export default props => {
-  const [formData, setData] = useState({});
+  const [selectedSymptoms, setSymptoms] = useState([]);
   return (
-    <Styles className='container'>
-      <h1>¿Cómo te sientes Hoy?</h1>
-      <Formik initialValues={props.initialValues} onSubmit={props.onSubmit}>
-        <Form>
+    <Form
+      onSubmit={e => {
+        e.preventDefault();
+        props.onSubmit(selectedSymptoms)
+      }}
+      className='container'
+    >
+        <Form.Group>
+          <Form.Label>Selecciona uno o más síntomas</Form.Label>
+          <Select options={toSelectOptions(SymptomsList)}
+                  placeholder='Seleccionar'
+                  isMulti
+                  required
+                  onChange={symptomsList => setSymptoms(symptomsList)}
+          />
+        </Form.Group>
 
-        </Form>
-      </Formik>
-    </Styles>
+        <div className='form-group'>
+          <Button variant='primary' type='submit'>Continuar</Button>
+          <Button variant='success' tyupe='submit' className='ml-1'>
+            ¡No tengo ningún síntoma!
+          </Button>
+        </div>
+    </Form>
   );
 };
