@@ -4,9 +4,10 @@ import { Consumer } from './components/Data/context'
 import Layout from "./components/layout"
 import SEO from "./components/seo"
 
-import { GeoLayer } from './components/Map/Map'
 import { WelcomeForm } from './components/Forms/WelcomeForm'
+import { GeoLayer } from './components/Map/Map'
 
+import amplitude from 'amplitude-js'
 import './styles/style.scss'
 import axios from 'axios'
 
@@ -30,11 +31,14 @@ const IndexPage = () => {
 			owner_id:id, 
 			coords: coords,
 			city: data.address.city,
-			country: data.address.country
+			country: data.address.country,
+			created: new Date()
 		}
 
 		setLocation(location)
 		await db.insertOne(location).catch(console.log)
+		const { created, coords: c, ...amplitude_event } = location
+		amplitude.getInstance().logEvent('Submit Health', {amplitude_event})
     }
 
 	const success = ({ coords: { latitude, longitude }}) => setCoords([longitude, latitude])
