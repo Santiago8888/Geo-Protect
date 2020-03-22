@@ -2,9 +2,9 @@ import Image from "./image"
 import PropTypes from "prop-types"
 import React from "react"
 
-const Header = ({ siteTitle }) => (
+const Header = () => (
   <header
-    style={{ background: `rgb(204, 14, 0)`, height: '10vh' }}
+    style={{ background: `#38B6FF`, height: '10vh' }}
   >
     <div
       style={{

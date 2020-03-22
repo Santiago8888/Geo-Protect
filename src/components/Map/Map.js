@@ -1,11 +1,6 @@
-import { StaticMap } from 'react-map-gl'
 import { ColumnLayer, IconLayer } from '@deck.gl/layers'
-
-import countries from '../../data/countries.json'
-import locations from '../../data/locations.json'
 import DeckGL, {FlyToInterpolator} from 'deck.gl'
-
-
+import { StaticMap } from 'react-map-gl'
 import React from 'react'
 
 
@@ -36,9 +31,9 @@ export class GeoLayer extends React.Component {
 		document.getElementById('deckgl-wrapper').addEventListener('contextmenu', evt => evt.preventDefault())
     }
 
-    componentWillReceiveProps({ navigation }){
+    componentWillReceiveProps({ navigation, coords }){
         if(navigation){
-            this._goToViewState({...navigation, zoom: 10.5})
+            this._goToViewState({longitude: coords[0], latitude: coords[1], zoom: 10.5})
         }
     }
 
@@ -55,12 +50,13 @@ export class GeoLayer extends React.Component {
 
 	_getTooltip = ({ object }) => object
         ? 	this.state.viewState.zoom < 6 
-            ?   { text:`Healthy: ${object.healthy}\n Sick: ${object.sick}` }
+            ?   { text:`${object._id}\n Healthy: ${object.total - object.sick}\n Sick: ${object.sick}` }
             :   { text: object.isSick ? 'Sick' : 'Healthy' }
 		:	null
 
     render() {
         const { viewState } = this.state
+        const { countries, locations } = this.props
 
         const aggregateLayer = new ColumnLayer({
             id: 'column-layer',
@@ -70,8 +66,13 @@ export class GeoLayer extends React.Component {
             extruded: true,
             pickable: true,
             elevationScale: 5000,
-            getPosition: d => [d.longitude, d.latitude],
-            getFillColor: d => [128+((d.sick-128)*2), 0, 128-((d.sick-128)*2), 255], // Red, Green, Blue  
+            getPosition: d => d.coords,
+            getFillColor: d => [
+                Math.round(127 * Math.max(0, Math.min(2, d.sick/(d.total - d.sick)))),
+                0, 
+                Math.round(127 * Math.max(0, Math.min(2, (d.total - d.sick)/d.sick))), 
+                255
+            ],   
             getLineColor: [0, 0, 0],
             getElevation: d => d.sick
         })
@@ -85,11 +86,12 @@ export class GeoLayer extends React.Component {
             getIcon: d => 'marker',
         
             sizeScale: 15,
-            getPosition: d => [d.longitude, d.latitude],
+            getPosition: d => d.coords,
             getSize: d => 10,
-            getColor: d => [d.isSick*200, 140, 0],
+            getColor: d => [d.value*127, 140, 0],
         })
-        
+
+
         return <DeckGL
             onContextMenu={event => event.preventDefault()}
             initialViewState={ viewState }
