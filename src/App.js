@@ -14,7 +14,8 @@ import axios from 'axios'
 const default_coords = [-102.5528, 23.6345]
 const IndexPage = () => {
 	const [ coords, setCoords ] = useState(null)
-    const [ navigation, setNavigation ] = useState(false)
+	const [ location, setLocation ] = useState({})
+	const [ navigation, setNavigation ] = useState(false)
 
     const post = async (val, db, id) => {
 		setNavigation(true)
@@ -24,14 +25,16 @@ const IndexPage = () => {
 		const geocode_url = `${location_url}?key=${token}&lat=${coords[1]}&lon=${coords[0]}&format=json`
 		const { data = { address:{}} } = await axios.get(geocode_url)
 
-		const doc = {
+		const location = {
 			value: val, 
 			owner_id:id, 
 			coords: coords,
 			city: data.address.city,
 			country: data.address.country
 		}
-		await db.insertOne(doc).catch(console.log)
+
+		setLocation(location)
+		await db.insertOne(location).catch(console.log)
     }
 
 	const success = ({ coords: { latitude, longitude }}) => setCoords([longitude, latitude])
@@ -48,13 +51,14 @@ const IndexPage = () => {
 
     return <Layout>
         <SEO title="Map" />
-        <Consumer>{({ id, db, countries, locations }) => <Fragment>
+        <Consumer>{({ id, db, cities, countries, locations }) => <Fragment>
             <WelcomeForm onSubmit={d => post(d, db, id)}/>
 			<GeoLayer 
 				coords={coords} 
+				cities={cities}
 				countries={countries}
-				locations={locations}
 				navigation={navigation} 
+				locations={[...locations, location]}
 			/>
         </Fragment>}</Consumer>
     </Layout>

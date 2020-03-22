@@ -6,7 +6,7 @@ import React from 'react'
 
 const MAPBOX_ACCESS_TOKEN = 'pk.eyJ1IjoiZHpldGEiLCJhIjoiY2s2cWFvbjBzMDIzZzNsbnhxdHI5eXIweCJ9.wQflyJNS9Klwff3dxtHJzg'
 const MAP_STYLES = ['light-v10', 'dark-v10', 'outdoors-v11', 'satellite-v9']
-
+const MAX_ZOOM = 12.5
 
 const initialViewState = { 
     latitude: 10.69279,
@@ -24,7 +24,10 @@ const ICON_MAPPING = {
 export class GeoLayer extends React.Component {
 	constructor(props) {
 		super(props)
-		this.state = { viewState: initialViewState }
+		this.state = { 
+            viewState: initialViewState,
+            layer: null
+        }
     }
     
     componentDidMount(){
@@ -38,8 +41,9 @@ export class GeoLayer extends React.Component {
     }
 
     _onViewStateChange = viewState => {
-        this.setState({ viewState: {...this.state.viewState, ...viewState} })
+        this.setState({ viewState: {...this.state.viewState, ...viewState, zoom: Math.min(MAX_ZOOM, viewState.zoom)} })
     }
+
     _goToViewState = props => {
         this._onViewStateChange({
             ...props,
@@ -49,16 +53,16 @@ export class GeoLayer extends React.Component {
     }    
 
 	_getTooltip = ({ object }) => object
-        ? 	this.state.viewState.zoom < 6 
+        ? 	this.state.viewState.zoom < 9 
             ?   { text:`${object._id}\n Healthy: ${object.total - object.sick}\n Sick: ${object.sick}` }
-            :   { text: object.isSick ? 'Sick' : 'Healthy' }
+            :   { text: object.value ? 'Sick' : 'Healthy' }
 		:	null
 
     render() {
-        const { viewState } = this.state
-        const { countries, locations } = this.props
+        const { viewState, layer } = this.state
+        const { countries, cities, locations } = this.props
 
-        const aggregateLayer = new ColumnLayer({
+        const countryLayer = new ColumnLayer({
             id: 'column-layer',
             data: countries,
             diskResolution: 12,
@@ -77,7 +81,26 @@ export class GeoLayer extends React.Component {
             getElevation: d => d.sick
         })
 
-        const iconLayer = new IconLayer({
+        const cityLayer = new ColumnLayer({
+            id: 'column-layer',
+            data: cities,
+            diskResolution: 12,
+            radius: 50000,
+            extruded: true,
+            pickable: true,
+            elevationScale: 5000,
+            getPosition: d => {console.log(d); return d.coords},
+            getFillColor: d => [
+                Math.round(127 * Math.max(0, Math.min(2, d.sick/(d.total - d.sick)))),
+                0, 
+                Math.round(127 * Math.max(0, Math.min(2, (d.total - d.sick)/d.sick))), 
+                255
+            ],   
+            getLineColor: [0, 0, 0],
+            getElevation: d => d.sick
+        })
+
+        const locationsLayer = new IconLayer({
             id: 'icon-layer',
             data: locations,
             pickable: true,
@@ -91,6 +114,12 @@ export class GeoLayer extends React.Component {
             getColor: d => [d.value*127, 140, 0],
         })
 
+        const get_layer = ({ zoom }) => {
+            if(zoom < 6) this.setState({layer: countryLayer})
+            else if(zoom < 9) this.setState({layer: cityLayer})
+            else return this.setState({layer: locationsLayer})
+        }
+
 
         return <DeckGL
             onContextMenu={event => event.preventDefault()}
@@ -98,10 +127,13 @@ export class GeoLayer extends React.Component {
             height={'90vh'}
             style={{marginTop:'10vh'}}
             controller={true}
-            layers={viewState.zoom > 6 ? [iconLayer] : [aggregateLayer]}
+            layers={[layer]}
             getTooltip={this._getTooltip}
             viewState={ viewState }
-            onViewStateChange={({ viewState }) => this._onViewStateChange(viewState)}
+            onViewStateChange={({ viewState }) => {
+                this._onViewStateChange(viewState)
+                get_layer(viewState)
+            }}
         >
             <StaticMap 
                 onContextMenu={event => event.preventDefault()}
