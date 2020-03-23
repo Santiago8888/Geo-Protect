@@ -12,7 +12,7 @@ import './styles/style.scss'
 import axios from 'axios'
 
 
-const near_me_options = (center) => ({geoCoords: {$near: {$geometry: {type :"Point", coordinates:center}, $maxDistance: 1000000000 }}})
+const near_me_options = center => ({geoCoords: {$near: {$geometry: {type :"Point", coordinates:center}, $maxDistance: 1000000000 }}})
 const default_coords = [-102.5528, 23.6345]
 const IndexPage = () => {
 	const [ coords, setCoords ] = useState(null)
@@ -62,7 +62,6 @@ const IndexPage = () => {
 
 	useEffect(() => {
         async function fetchLocation(){
-            console.log('Getting Location')
             !navigator.geolocation
             ?   setCoords(default_coords)
 			:   navigator.geolocation.getCurrentPosition(success, error)
