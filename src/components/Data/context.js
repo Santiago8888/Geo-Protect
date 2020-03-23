@@ -13,7 +13,6 @@ export const db = mongo.db("geodatadev").collection(collection)
 
 const get_countries = () => db.aggregate(countries_pipeline).toArray()
 const get_cities = () => db.aggregate(cities_pipeline).toArray()
-const get_locations = () => db.find({}, { limit: 100}).asArray().catch(console.log)
 
 
 const AMPLITUDE_KEY_DEV = 'ed8af6b3897a0779afd06757c5d971ff'
