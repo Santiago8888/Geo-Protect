@@ -16,10 +16,12 @@ import {isNumber, toNumber} from 'lodash';
 const SocialShareModal =  props => {
   const [isActive, setActive] = useState(false);
   useEffect(() => {
-    const timerId = setTimeout(() => {
-      setActive(true);
-    }, isNumber(props.delay) ?  toNumber(props.delay)*1000 : 5000);
-    return () => clearTimeout(timerId);
+    if (props.delay) {
+      const timerId = setTimeout(() => {
+        setActive(true);
+      }, isNumber(props.delay) ?  toNumber(props.delay)*1000 : 5000);
+      return () => clearTimeout(timerId);
+    }
   }, []);
 
   const closeModal = () => {
