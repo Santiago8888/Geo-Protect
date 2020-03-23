@@ -8,7 +8,7 @@ import amplitude from 'amplitude-js'
 const collection = process.env.REACT_APP_ENV !== 'PROD' ? 'local_healthmap' : 'healthmap'
 const client = Stitch.initializeDefaultAppClient("geo-protection-vaqca")
 const mongo = client.getServiceClient(RemoteMongoClient.factory, "mongodb-atlas")
-const db = mongo.db("geodatadev").collection(collection)
+export const db = mongo.db("geodatadev").collection(collection)
 
 
 const get_countries = () => db.aggregate(countries_pipeline).toArray()
@@ -26,7 +26,6 @@ export const DBProvider = ({ children }) => {
     const [ id, setId ] = useState(null)
     const [ cities, setCities ] = useState([])
     const [ countries, setCountries ] = useState([])
-    const [ locations, setLocations ] = useState([])
   
     useEffect(() => {
       async function fetchData(){
@@ -42,8 +41,6 @@ export const DBProvider = ({ children }) => {
         const cities = await get_cities()
         setCities(cities.filter(({ _id })=> _id))
 
-        const locations = await get_locations()
-        setLocations(locations)
       }
       
       fetchData()
@@ -55,7 +52,6 @@ export const DBProvider = ({ children }) => {
         db: db, 
         cities: cities,
         countries: countries,
-        locations: locations
       }}
     >{children}</Provider>
 }
