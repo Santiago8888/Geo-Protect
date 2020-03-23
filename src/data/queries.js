@@ -16,3 +16,16 @@ export const cities_pipeline = [{
 		coords: { $first: "$coords"}
   	}
 }]
+
+
+export const near_me_pipeline = [{
+	$geoNear: {
+		near: {
+			type: 'Point', 
+			coordinates: [0, 0]
+		}, 
+		key: 'geoCoords', 
+		distanceField: 'dist.calculated', 
+		spherical: true
+	}
+}]

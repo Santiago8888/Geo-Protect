@@ -1,12 +1,15 @@
 import { ColumnLayer, IconLayer } from '@deck.gl/layers'
 import DeckGL, {FlyToInterpolator} from 'deck.gl'
 import { StaticMap } from 'react-map-gl'
+import amplitude from 'amplitude-js'
 import React from 'react'
 
 
 const MAPBOX_ACCESS_TOKEN = 'pk.eyJ1IjoiZHpldGEiLCJhIjoiY2s2cWFvbjBzMDIzZzNsbnhxdHI5eXIweCJ9.wQflyJNS9Klwff3dxtHJzg'
 const MAP_STYLES = ['light-v10', 'dark-v10', 'outdoors-v11', 'satellite-v9']
-const MAX_ZOOM = 12.5
+const MAX_ZOOM = 13
+const ANIMATION_ZOOM = 10.5
+const ANIMATION_INTERVAL = 5*1000
 
 const initialViewState = { 
     latitude: 10.69279,
@@ -36,7 +39,8 @@ export class GeoLayer extends React.Component {
 
     componentWillReceiveProps({ navigation, coords }){
         if(navigation){
-            this._goToViewState({longitude: coords[0], latitude: coords[1], zoom: 10.5})
+            this._goToViewState({longitude: coords[0], latitude: coords[1], zoom: ANIMATION_ZOOM})
+            setTimeout(() => amplitude.getInstance().logEvent('Animation Interval'), ANIMATION_INTERVAL)
         }
     }
 
@@ -47,7 +51,7 @@ export class GeoLayer extends React.Component {
     _goToViewState = props => {
         this._onViewStateChange({
             ...props,
-            transitionDuration: 5000,
+            transitionDuration: ANIMATION_INTERVAL,
             transitionInterpolator: new FlyToInterpolator()            
         })
     }    
@@ -85,11 +89,11 @@ export class GeoLayer extends React.Component {
             id: 'column-layer',
             data: cities,
             diskResolution: 12,
-            radius: 50000,
+            radius: 10000,
             extruded: true,
             pickable: true,
             elevationScale: 5000,
-            getPosition: d => {console.log(d); return d.coords},
+            getPosition: d => d.coords,
             getFillColor: d => [
                 Math.round(127 * Math.max(0, Math.min(2, d.sick/(d.total - d.sick)))),
                 0, 
@@ -140,7 +144,7 @@ export class GeoLayer extends React.Component {
                 mapboxApiAccessToken={MAPBOX_ACCESS_TOKEN} 
                 mapStyle={`mapbox://styles/mapbox/${MAP_STYLES[2]}`}
                 attributionControl={false}
-                onLoad={()=> console.log({loaded: true})}
+//                onLoad={()=> console.log({loaded: true})}
             />
         </DeckGL>
     }
