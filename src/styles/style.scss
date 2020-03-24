@@ -2,3 +2,57 @@
 // If need, change your variables before importing Bulma
 $title-color: #ff0000;
 @import "~bulma/bulma.sass";
+
+.social-share-modal {
+
+  .intro {
+    display: flex;
+
+    .logo {
+      flex-basis: 30%;
+
+      img {
+        max-width: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    }
+
+    .content {
+      padding-left: 1rem;
+      display: flex;
+      flex-direction: column;
+
+      h1 {
+        font-weight: bold;
+        font-size: 32px;
+      }
+
+      p {
+        padding-top: 1rem;
+      }
+    }
+  }
+
+  .social-network-icons {
+    list-style-type: none;
+    width: 100%;
+
+    &:after {
+      clear: both;
+    }
+
+    li {
+      display: inline;
+
+      & + li {
+        padding-left: 1em;
+      }
+    }
+
+    li:last-child {
+      clear: both;
+      content: ' ';
+    }
+  }
+}
